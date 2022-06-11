@@ -10,3 +10,7 @@ jobs:
           node-version: 14
           cache: npm
       - run: chmod +x ./build.sh && ./build.sh
+      - uses: actions/upload-artifact@v3
+        with:
+          name: build
+          path: ./
