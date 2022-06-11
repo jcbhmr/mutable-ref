@@ -67,7 +67,7 @@ function Form() {
 /** Listens for onchange on state and updates the output.value accordingly */
 function ReflectedOutput({ state, ...rest }) {
     const output = html`<output ...${rest} />`
-    state.apply(output)
+    state.pipeTo(output)
     return output
 }
 ```
