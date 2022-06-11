@@ -1,0 +1,14 @@
+{
+    "name": "mutable-ref",
+    "description": "A .value setter that emits change events",
+    "version": "1.0.0",
+    "exports": {
+        ".": "./-.js"
+    },
+    "scripts": {
+        "dev.linux": "./dev.sh"
+    },
+    "devDependencies": {
+        "typescript": "latest"
+    }
+}
