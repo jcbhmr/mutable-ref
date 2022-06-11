@@ -1,10 +1,10 @@
 {
-  "name": "mutable-ref",
-  "description": "A .value setter that emits change events",
-  "keywords": [],
-  "version": "1.0.0",
-  "exports": "./-.js",
-  "devDependencies": {
-    "typescript": "^4.7.3"
-  }
+	"name": "mutable-ref",
+	"description": "A .value setter that emits change events",
+	"keywords": ["mutable", "ref", "eventtarget"],
+	"version": "1.0.0",
+	"exports": "./-.js",
+	"devDependencies": {
+		"typescript": "^4.7.3"
+	}
 }
