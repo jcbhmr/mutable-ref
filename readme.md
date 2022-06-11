@@ -73,3 +73,24 @@ function ReflectedOutput({ state, ...rest }) {
 ```
 
 [mdn:weakref]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WeakRef
+
+## How It Works
+
+It's a wrapper object with a `.value` property setter. That's it.
+
+Code excerpt from [`-.ts`](./-.ts)
+```ts
+class {
+    #value: T = null
+    get value() {
+        return this.#value
+    }
+    set value(newValue: T) {
+        const oldValue = this.#value
+        this.#value = newValue
+
+        const event = new Event("change", { target: this })
+        this.dispatchEvent(event)
+    }
+}
+```
