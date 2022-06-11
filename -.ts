@@ -1,30 +1,10 @@
 export { MutableRef as default }
-
-interface ValueContainer<T> {
-	value: T
-}
+export type { ValueContainer }
 
 // TODO: Add a better TypeScript interface for EventTarget so that it has specific types
 // of events. I want the IntelliSense on MutableRef::addEventListener() to be better!
 class MutableRef<T> extends EventTarget implements ValueContainer<T> {
-	static transform<T, U>(transformer: (value: T) => U) {
-		const writable = new MutableRef<T>()
-		const readable = new MutableRef<U>()
-		writable.addEventListener("change", (event) => void (readable.value = event.target.value))
-		// Same names as TransformStream, different object types
-		return { writable, readable }
-	}
-
-	#onchange = null
 	#value: T = null
-	constructor(initial = null) {
-		this.value = null
-	}
-
-	// Symmetry with WeakRef::deref()
-	deref() {
-		return this.value
-	}
 	get value() {
 		return this.#value
 	}
@@ -32,26 +12,32 @@ class MutableRef<T> extends EventTarget implements ValueContainer<T> {
 		const oldValue = this.#value
 		this.#value = newValue
 
-		const event = new CustomEvent("change", { target: this })
+		// Don't know how to type the .target property on Event yet. This just
+		// suppresses the error for now.
+		// @ts-expect-error
+		const event = new Event("change", { target: this })
 		this.dispatchEvent(event)
 	}
 
-	listenTo(source: EventTarget) {
-        // TODO: Use a FinalizationRegistry + WeakRef or something so that this MutableRef can
-        // be garbage collected, and this event listener can be removed
-		source.addEventListener("change", (event) => void (this.value = event.target.value))
-	}
-	pipeTo(target: ValueContainer<T>) {
-        // See listenTo about garbage collection
-		this.addEventListener("change", (event) => void (target.value = event.target.value))
+	static transform<T, U>(transformer: (value: T) => U) {
+		const writable = new MutableRef<T>()
+		const readable = new MutableRef<U>()
+		writable.addEventListener("change", (event) => {
+			const oldValue = (event.target as typeof writable).value
+			const newValue = transformer(oldValue)
+			readable.value = newValue
+		})
+		// Same names as TransformStream for familiarity
+		return { writable, readable }
 	}
 
 	// TODO: Unsure if this .onchange behaviour follows the HTML spec...
+	#onchange: EventListener = null
 	get onchange() {
 		return this.#onchange
 	}
 	set onchange(newOnchange) {
-        // MUST be a function or null
+		// MUST be a function or null
 		if (!(typeof newOnchange === "function" || newOnchange === null)) {
 			return
 		}
@@ -75,4 +61,19 @@ class MutableRef<T> extends EventTarget implements ValueContainer<T> {
 		// Perform default mutation
 		this.#onchange = newOnchange
 	}
+
+	constructor(initial = null) {
+		super()
+
+		this.value = initial
+	}
+
+	// Symmetry with WeakRef#deref()
+	deref() {
+		return this.value
+	}
+}
+
+interface ValueContainer<T> {
+	value: T
 }
