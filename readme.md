@@ -1,5 +1,5 @@
 # `MutableRef`
-A `.value` setter that emits `"change"` events
+A `.value` setter that emits `change` events
 ```ts
 const state = new MutableRef("Hello world!")
 console.debug(`Before change:`, state.value)
