@@ -3,4 +3,4 @@
 # Install TypeScript
 npm install
 # Convert TS to JS using tsconfig.json for options
-tsc --watch
+npx tsc --watch
