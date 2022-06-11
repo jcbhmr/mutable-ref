@@ -9,4 +9,4 @@ jobs:
         with:
           node-version: 14
           cache: npm
-      - run: ./build.sh
+      - run: chmod +x ./build.sh && ./build.sh
