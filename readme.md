@@ -1,5 +1,5 @@
 # `MutableRef`
-Like [`WeakRef`][mdn:weakref], but mutable
+A `.value` setter that emits `"change"` events
 ```ts
 const state = new MutableRef("Hello world!")
 console.debug(`Before change:`, state.value)
